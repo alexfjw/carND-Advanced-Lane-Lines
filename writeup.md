@@ -49,7 +49,7 @@ The correction though subtle, can be seen when we compare the shapes of the traf
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at the 7th code block in the "./project_nb.ipynb"). The image was converted to the HLS space and the sobel filter was applied to the L & S dimensions. Thresholding for both dimensions was used for binarization, and the outputs were combined.  Here's an example of my output for this step.  
+I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at the 7th code block in the "./project_nb.ipynb"). The image was converted to the HLS space and the sobel filter was applied to the x & y dimensions. In addition, angle thresholding was also used for the gradient, because lines to follow a certain angle. The combination of the L dimension, H dimension, angle thresholding and gradient magnitude thresholding helped greatly in creating a binarized image. Here's an example of my output for this step.  
 
 ![alt text][image3]
 
@@ -87,6 +87,7 @@ I verified that my perspective transform was working as expected by drawing the 
 The function `sliding_window(..)` in code block 11 of the Jupyter notebook was used to fit lane lines with a 2nd order polynomial.
 A histogram of the bottom half of the image is computed, and the maxima was taken as the x coordinates of the lane lines. 9 vertically stacked windows were used to connect the lane pixels, each one centered on the lane pixels of the window below. This allows us to trace the lane lines from the bottom of the image. The Numpy polyfit function was used to then fit a second order polynomial with the identified lane pixels.(note that not all the lines of the rectangles are showing, due to a bug in OpenCV)
 
+A similar function, `polyfit_with_prev_fits(..)` allows reuse of the starting positions of the lane lines from the `sliding_window(..)` function. At times, lane demarcations come in large intervals, leading the histogram technique in the sliding window function to start from an incorrect lane. Reusing previous starting positions when the detected starting positions differ too much ensures that the right lane line is caught.
 
 ![alt text][image5]
 
@@ -95,7 +96,6 @@ A histogram of the bottom half of the image is computed, and the maxima was take
 The function `calc_curv_rad(..)` in code block 14 of the Jupyter notebook performs this task. The curvature of the lanes is estimated by scaling with statistics on the actual dimensions of road lanes.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
-
 
 
 ![alt text][image6]
